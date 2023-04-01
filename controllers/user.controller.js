@@ -206,7 +206,7 @@ exports.forgotPassword = async function (req, res, next) {
         expiresIn: 86400, // 24 hours
       }
     );
-    const url = `http://localhost:3000/user/reset-password/${token}`;
+    const url = `https://serviceapp.up.railway.app/user/reset-password/${token}`;
     sendForgotEmail(user.email, url, "Reset Password");
     res.status(200).json({
       message: "Email has been sent, kindly follow the instructions",
