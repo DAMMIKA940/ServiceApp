@@ -7,7 +7,7 @@ const routes = require('./routes/mainroutes');
 const cors = require('cors');
 const connectDB = require("./config/db.config");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
