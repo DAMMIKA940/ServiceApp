@@ -144,14 +144,20 @@ exports.edit = async (req, res) => {
 };
 
 // Retrieve all Users from the database with session and cookie and JWT token.
-exports.findAll = (req, res) => {
-  User.getAll((err, data) => {
-    if (err)
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users.",
-      });
-    else res.send(data);
-  });
+exports.findAll = async(req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({
+      code: 200,
+      success: true,
+      users: users,
+      message: "Users fetched successfully",
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ code: 500, success: false, message: "Internal Server Error" });
+  }
 };
 
 // Find a single User with an id with session and cookie and JWT token.
