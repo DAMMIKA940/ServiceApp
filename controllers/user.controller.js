@@ -5,13 +5,21 @@ const cloudinary = require("../lib/cloudinary");
 require("dotenv").config();
 const { sendForgotEmail } = require("../lib/emailServices");
 // Create and Save a new User with password encryption and JWT token and session and cookie
-exports.create = (req, res) => {
+exports.create =async(req, res) => {
   // Validate request
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty!",
     });
   }
+
+
+  //check if email already exists
+  const emailExist = await User.findOne({ email: req.body.email });
+  if (emailExist)
+    return res
+      .status(200)
+      .json({ code: 200, success: true, message: "Email already available" });
 
   // Encrypt password
   const saltRounds = 10;
@@ -31,6 +39,8 @@ exports.create = (req, res) => {
       res.status(500).send({
         message: err.message || "Some error occurred while creating the User.",
       });
+
+
     else {
       const token = jwt.sign(
         {
@@ -48,7 +58,13 @@ exports.create = (req, res) => {
         maxAge: 86400000,
       });
       // res.send(data);
-      res.send({
+      res.status(200).json({
+
+
+        code: 200,
+        success: true,
+        token: token,
+        data : data,
         message: "User was registered successfully!",
       });
     }
@@ -95,9 +111,14 @@ exports.login = async (req, res) => {
       maxAge: 86400000,
     });
 
-    res.send({
+    res.status(200).json({
+      code: 200,
+      success: true,
+      token: token,
       message: "User was logged in successfully!",
     });
+
+
   } catch (error) {
     console.log(error);
   }
