@@ -133,6 +133,14 @@ exports.login = async (req, res) => {
 exports.edit = async (req, res) => {
   try {
     let user = await User.findById(req.params.id);
+    //check if user exists
+    if (!user) {
+      res.status(404).send({
+        code: 404,
+        success: false,
+        message: "User Not found.",
+      });
+    }
     let result;
 
     if (req.file) {
