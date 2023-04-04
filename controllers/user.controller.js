@@ -37,6 +37,8 @@ exports.create =async(req, res) => {
   User.create(user, (err, data) => {
     if (err)
       res.status(500).send({
+        code: 500,
+        success: false,
         message: err.message || "Some error occurred while creating the User.",
       });
 
@@ -59,8 +61,6 @@ exports.create =async(req, res) => {
       });
       // res.send(data);
       res.status(200).json({
-
-
         code: 200,
         success: true,
         token: token,
@@ -79,6 +79,8 @@ exports.login = async (req, res) => {
     });
     if (!user) {
       res.status(404).send({
+        code : 404,
+        success: false,
         message: "User Not found.",
       });
     }
@@ -91,6 +93,8 @@ exports.login = async (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({
         accessToken: null,
+        code : 401,
+        success: false,
         message: "Invalid Password!",
       });
     }
@@ -115,6 +119,7 @@ exports.login = async (req, res) => {
       code: 200,
       success: true,
       token: token,
+      data : user,
       message: "User was logged in successfully!",
     });
 
@@ -147,15 +152,22 @@ exports.edit = async (req, res) => {
       .then((data) => {
         if (!data) {
           res.status(404).send({
+            code: 404,
+            success: false,
             message: `Cannot update. Maybe User was not found!`,
           });
         } else
-          res.send({
+          res.status(200).send({
+
+            code: 200,
+            success: true,
             message: "User was updated successfully.",
           });
       })
       .catch((err) => {
         res.status(500).send({
+          code: 500,
+          success: false,
           message: "Error updating User with id=" + id,
         });
       });
@@ -230,6 +242,9 @@ exports.forgotPassword = async function (req, res, next) {
     const url = `https://serviceapp.up.railway.app/user/reset-password/${token}`;
     sendForgotEmail(user.email, url, "Reset Password");
     res.status(200).json({
+
+      code: 200,
+      success: true,
       message: "Email has been sent, kindly follow the instructions",
     });
   } catch (error) {}
@@ -254,10 +269,14 @@ exports.resetPassword = async function (req, res, next) {
     user.password = hash;
     await user.save();
     res.status(200).json({
+      code: 200,
+      success: true,
       message: "Password has been changed",
     });
   } catch (error) {
     res.status(500).json({
+      code: 500,
+      success: false,
       message: "Error in reset password",
     });
   }
@@ -275,11 +294,15 @@ exports.delete = (req, res) => {
           });
         } else {
           res.status(500).send({
+            code: 500,
+            success: false,
             message: "Could not delete User with id " + id,
           });
         }
       } else
-        res.send({
+        res.status(200).send({
+          code: 200,
+          success: true,
           message: `User was deleted successfully!`,
         });
     });
