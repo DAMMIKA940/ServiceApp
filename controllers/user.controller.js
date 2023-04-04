@@ -169,6 +169,7 @@ exports.edit = async (req, res) => {
 
             code: 200,
             success: true,
+            data: data,
             message: "User was updated successfully.",
           });
       })
