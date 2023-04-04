@@ -222,7 +222,9 @@ exports.findOne = (req, res) => {
 exports.logout = (req, res) => {
   req.session.destroy();
   res.clearCookie("token");
-  res.send({
+  res.status(200).json({
+    code: 200,
+    success: true,
     message: "User was logged out successfully!",
   });
 };
@@ -235,6 +237,8 @@ exports.forgotPassword = async function (req, res, next) {
     });
     if (!user) {
       return res.status(404).send({
+        code: 404,
+        success: false,
         message: "User Not found.",
       });
     }
@@ -267,6 +271,8 @@ exports.resetPassword = async function (req, res, next) {
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(404).send({
+        code: 404,
+        success: false,
         message: "User Not found.",
       });
     }
@@ -298,6 +304,8 @@ exports.delete = (req, res) => {
       if (err) {
         if (err.kind === "not_found") {
           res.status(404).send({
+            code: 404,
+            success: false,
             message: `Not found User with id ${id}.`,
           });
         } else {
