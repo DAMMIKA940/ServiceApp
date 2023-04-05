@@ -11,6 +11,7 @@ Routes.get('/getbyId/:id', userController.findOne);
 Routes.get('/logout', userController.logout);
 Routes.post('/forgetpassword', userController.forgotPassword);
 Routes.post('/reset-password/:token', userController.resetPassword);
+Routes.get('/getUserDetailsByToken', userController.getUserDetailsByToken);
 
 
 module.exports = Routes;

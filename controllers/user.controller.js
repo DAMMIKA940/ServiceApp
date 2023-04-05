@@ -47,6 +47,7 @@ exports.create =async(req, res) => {
       const token = jwt.sign(
         {
           id: data.id,
+          email: data.email,
         },
         process.env.SECRET_KEY,
         {
@@ -102,6 +103,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       {
         id: user.id,
+        email: user.email,
       },
       process.env.SECRET_KEY,
       {
@@ -325,5 +327,33 @@ exports.delete = (req, res) => {
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+exports.getUserDetailsByToken = async (req, res) => {
+  try {
+    // console.log(req.headers.authorization);
+    const token = req.headers.authorization;
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    // console.log(decoded);
+    const user = await User.findById(decoded.id);
+    
+    if (!user) {
+      return res.status(404).send({
+        code: 404,
+        success: false,
+        message: "User Not found.",
+      });
+    }
+    res.status(200).json({
+      code: 200,
+      success: true,
+      user: user,
+      message: "User Details fetched successfully",
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ code: 500, success: false, message: "Internal Server Error" });
   }
 };
