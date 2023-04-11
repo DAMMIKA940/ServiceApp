@@ -19,7 +19,7 @@ exports.create =async(req, res) => {
   if (emailExist)
     return res
       .status(200)
-      .json({ code: 200, success: true, message: "Email already available" });
+      .json({ code: 200, success: false, message: "Email already available" });
 
   // Encrypt password
   const saltRounds = 10;
