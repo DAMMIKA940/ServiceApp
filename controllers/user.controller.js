@@ -5,14 +5,13 @@ const cloudinary = require("../lib/cloudinary");
 require("dotenv").config();
 const { sendForgotEmail } = require("../lib/emailServices");
 // Create and Save a new User with password encryption and JWT token and session and cookie
-exports.create =async(req, res) => {
+exports.create = async (req, res) => {
   // Validate request
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty!",
     });
   }
-
 
   //check if email already exists
   const emailExist = await User.findOne({ email: req.body.email });
@@ -41,8 +40,6 @@ exports.create =async(req, res) => {
         success: false,
         message: err.message || "Some error occurred while creating the User.",
       });
-
-
     else {
       const token = jwt.sign(
         {
@@ -65,7 +62,7 @@ exports.create =async(req, res) => {
         code: 200,
         success: true,
         token: token,
-        data : data,
+        data: data,
         message: "User was registered successfully!",
       });
     }
@@ -79,8 +76,8 @@ exports.login = async (req, res) => {
       email: req.body.email,
     });
     if (!user) {
-      res.status(404).send({
-        code : 404,
+      res.status(200).send({
+        code: 200,
         success: false,
         message: "User Not found.",
       });
@@ -94,7 +91,7 @@ exports.login = async (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({
         accessToken: null,
-        code : 401,
+        code: 401,
         success: false,
         message: "Invalid Password!",
       });
@@ -121,11 +118,9 @@ exports.login = async (req, res) => {
       code: 200,
       success: true,
       token: token,
-      data : user,
+      data: user,
       message: "User was logged in successfully!",
     });
-
-
   } catch (error) {
     console.log(error);
   }
@@ -168,7 +163,6 @@ exports.edit = async (req, res) => {
           });
         } else
           res.status(200).send({
-
             code: 200,
             success: true,
             data: data,
@@ -188,7 +182,7 @@ exports.edit = async (req, res) => {
 };
 
 // Retrieve all Users from the database with session and cookie and JWT token.
-exports.findAll = async(req, res) => {
+exports.findAll = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json({
@@ -239,8 +233,8 @@ exports.forgotPassword = async function (req, res, next) {
       email,
     });
     if (!user) {
-      return res.status(404).send({
-        code: 404,
+      return res.status(200).send({
+        code: 200,
         success: false,
         message: "User Not found.",
       });
@@ -257,7 +251,6 @@ exports.forgotPassword = async function (req, res, next) {
     const url = `https://serviceapp.up.railway.app/user/reset-password/${token}`;
     sendForgotEmail(user.email, url, "Reset Password");
     res.status(200).json({
-
       code: 200,
       success: true,
       message: "Email has been sent, kindly follow the instructions",
@@ -273,8 +266,8 @@ exports.resetPassword = async function (req, res, next) {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const user = await User.findById(decoded.id);
     if (!user) {
-      return res.status(404).send({
-        code: 404,
+      return res.status(200).send({
+        code: 200,
         success: false,
         message: "User Not found.",
       });
@@ -337,10 +330,10 @@ exports.getUserDetailsByToken = async (req, res) => {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     // console.log(decoded);
     const user = await User.findById(decoded.id);
-    
+
     if (!user) {
-      return res.status(404).send({
-        code: 404,
+      return res.status(200).send({
+        code: 200,
         success: false,
         message: "User Not found.",
       });
