@@ -14,11 +14,15 @@ exports.create = async (req, res) => {
   }
 
   //check if email already exists
-  const emailExist = await User.findOne({ email: req.body.email });
+  const emailExist = await User.findOne({
+    email: req.body.email,
+  });
   if (emailExist)
-    return res
-      .status(200)
-      .json({ code: 200, success: false, message: "Email already available" });
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: "Email already available",
+    });
 
   // Encrypt password
   const saltRounds = 10;
@@ -192,9 +196,11 @@ exports.findAll = async (req, res) => {
       message: "Users fetched successfully",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ code: 500, success: false, message: "Internal Server Error" });
+    res.status(500).json({
+      code: 500,
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
 
@@ -215,16 +221,7 @@ exports.findOne = (req, res) => {
   });
 };
 
-//logout user with session and cookie and JWT token
-exports.logout = (req, res) => {
-  req.session.destroy();
-  res.clearCookie("token");
-  res.status(200).json({
-    code: 200,
-    success: true,
-    message: "User was logged out successfully!",
-  });
-};
+
 
 exports.forgotPassword = async function (req, res, next) {
   const { email } = req.body;
@@ -345,8 +342,50 @@ exports.getUserDetailsByToken = async (req, res) => {
       message: "User Details fetched successfully",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ code: 500, success: false, message: "Internal Server Error" });
+    res.status(500).json({
+      code: 500,
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+
+//logout user with session and cookie and JWT token and validation with JWT token
+exports.logout = async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    console.log(token);
+    if (!token) {
+      return res.status(403).send({
+        code: 403,
+        success: false,
+        message: "No token provided!",
+      });
+    }
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+      if (err) {
+        return res.status(401).send({
+          code: 401,
+          success: false,
+          message: "Unauthorized!",
+        });
+      }
+      if (decoded) {
+        req.session.destroy();
+        res.clearCookie("token");
+        res.status(200).send({
+          code: 200,
+          success: true,
+          message: "User logged out successfully!",
+        });
+      }
+    });
+  } catch (error) {
+    res.status(500).send({
+      code: 500,
+      success: false,
+      message: "Error logging out",
+    });
   }
 };
