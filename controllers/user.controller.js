@@ -32,8 +32,10 @@ exports.create = async (req, res) => {
 
   // Create a User
   const user = new User({
+
     password: hash,
     email: req.body.email,
+    role :"NormalUser"
   });
 
   // Save User in the database
