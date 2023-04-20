@@ -93,9 +93,9 @@ exports.login = async (req, res) => {
     );
 
     if (!passwordIsValid) {
-      return res.status(401).send({
+      return res.status(200).send({
         accessToken: null,
-        code: 401,
+        code: 200,
         success: false,
         message: "Invalid Password!",
       });
