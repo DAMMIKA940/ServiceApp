@@ -1,6 +1,6 @@
 const Service = require("../models/service.model");
 const cloudinary = require("../lib/cloudinary");
-const image = "not found";
+const image = null;
 
 exports.create = async (req, res) => {
   try {
@@ -45,7 +45,7 @@ exports.findAll = async (req, res) => {
     res.status(200).json({
       code: 200,
       success: true,
-      users: services,
+      services: services,
       message: "Services fetched successfully",
     });
   } catch (error) {
@@ -63,7 +63,7 @@ exports.findOne = async (req, res) => {
     res.status(200).json({
       code: 200,
       success: true,
-      users: service,
+      services: service,
       message: "Service fetched successfully",
     });
   } catch (error) {
@@ -114,7 +114,7 @@ exports.delete = async (req, res) => {
     res.status(200).json({
       code: 200,
       success: true,
-      users: service,
+      services: service,
       message: "Service deleted successfully",
     });
   } catch (error) {
@@ -125,3 +125,23 @@ exports.delete = async (req, res) => {
     });
   }
 };
+
+
+exports.getbyServiceType = async (req, res) => {
+  try {
+    console.log("asdfsf",req.params.serviceType);
+    const service = await Service.find({ serviceType: req.params.type });
+    res.status(200).json({
+      code: 200,
+      success: true,
+      services: service,
+      message: "Service fetched successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+}
