@@ -27,22 +27,27 @@ const userSchema = new mongoose.Schema({
   
         unique: true,
         trim: true,
-        minlength: 3
+        minlength: 3,
+        default:null
     },
 
     mobile: {
         type: String,
         unique: true,
         trim: true,
-        minlength: 3
+        minlength: 3,
+        default:null
     },
     address: {
         type: String,
         trim: true,
+        default:null  
     },
     image: {
         type: String,
         trim: true,
+        default:null
+
     },
     role: {
         type: String,
