@@ -5,7 +5,7 @@ const userController = require('../../controllers/user.controller');
 
 Routes.post('/register', userController.create);
 Routes.post('/login', userController.login);
-Routes.put('/update/:id', storage.single('image'), userController.edit);
+Routes.put('/update/:id', userController.edit);
 Routes.get('/all', userController.findAll);
 Routes.get('/getbyId/:id', userController.findOne);
 Routes.post('/logout', userController.logout);
