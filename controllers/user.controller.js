@@ -144,17 +144,13 @@ exports.edit = async (req, res) => {
         message: "User Not found.",
       });
     }
-    let result;
 
-    if (req.file) {
-      result = await cloudinary.uploader.upload(req.file.path);
-    }
     const data = {
       firstName: req.body.firstName || user.firstName,
       lastName: req.body.lastName || user.lastName,
       mobile: req.body.mobile || user.mobile,
       address: req.body.address || user.address,
-      image: result ? result.secure_url : user.image,
+      image:  req.body.image || user.image
     };
 
     User.findByIdAndUpdate(req.params.id, data, {
